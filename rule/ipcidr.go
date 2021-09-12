@@ -2,6 +2,7 @@ package rules
 
 import (
 	"net"
+	"regexp"
 
 	C "github.com/Dreamacro/clash/constant"
 )
@@ -54,7 +55,11 @@ func (i *IPCIDR) ShouldResolveIP() bool {
 	return !i.noResolveIP
 }
 
+var purify = regexp.MustCompile(`\b0+\B`)
+
 func NewIPCIDR(s string, adapter string, opts ...IPCIDROption) (*IPCIDR, error) {
+	s = purify.ReplaceAllString(s, "")
+
 	_, ipnet, err := net.ParseCIDR(s)
 	if err != nil {
 		return nil, errPayload
