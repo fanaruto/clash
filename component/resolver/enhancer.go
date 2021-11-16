@@ -11,7 +11,7 @@ type Enhancer interface {
 	MappingEnabled() bool
 	IsFakeIP(net.IP) bool
 	IsExistFakeIP(net.IP) bool
-	FindHostByIP(net.IP) (string, bool)
+	FindHostByIP(net.IP) (string, string, bool)
 }
 
 func FakeIPEnabled() bool {
@@ -46,10 +46,10 @@ func IsExistFakeIP(ip net.IP) bool {
 	return false
 }
 
-func FindHostByIP(ip net.IP) (string, bool) {
+func FindHostByIP(ip net.IP) (string, string, bool) {
 	if mapper := DefaultHostMapper; mapper != nil {
 		return mapper.FindHostByIP(ip)
 	}
 
-	return "", false
+	return "", "", false
 }

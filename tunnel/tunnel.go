@@ -129,14 +129,13 @@ func preHandleMetadata(metadata *C.Metadata) error {
 
 	// preprocess enhanced-mode metadata
 	if needLookupIP(metadata) {
-		host, exist := resolver.FindHostByIP(metadata.DstIP)
+		host, dnsMode, exist := resolver.FindHostByIP(metadata.DstIP)
 		if exist {
 			metadata.Host = host
 			metadata.AddrType = C.AtypDomainName
-			metadata.DNSMode = C.DNSMapping
+			metadata.DNSMode = C.DNSModeMapping[dnsMode]
 			if resolver.FakeIPEnabled() {
 				metadata.DstIP = nil
-				metadata.DNSMode = C.DNSFakeIP
 			} else if node := resolver.DefaultHosts.Search(host); node != nil {
 				// redir-host should lookup the hosts
 				metadata.DstIP = node.Data.(net.IP)

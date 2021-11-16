@@ -46,20 +46,20 @@ func (h *ResolverEnhancer) IsFakeIP(ip net.IP) bool {
 	return false
 }
 
-func (h *ResolverEnhancer) FindHostByIP(ip net.IP) (string, bool) {
+func (h *ResolverEnhancer) FindHostByIP(ip net.IP) (string, string, bool) {
 	if pool := h.fakePool; pool != nil {
 		if host, existed := pool.LookBack(ip); existed {
-			return host, true
+			return host, C.DNSFakeIP.String(), true
 		}
 	}
 
 	if mapping := h.mapping; mapping != nil {
 		if host, existed := h.mapping.Get(ip.String()); existed {
-			return host.(string), true
+			return host.(string), C.DNSMapping.String(), true
 		}
 	}
 
-	return "", false
+	return "", "", false
 }
 
 func (h *ResolverEnhancer) PatchFrom(o *ResolverEnhancer) {
